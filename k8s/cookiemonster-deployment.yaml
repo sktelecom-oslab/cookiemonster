@@ -1,0 +1,16 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: cookiemonster
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: cookiemonster
+    spec:
+      containers:
+      - name: cookiemonster
+        image: oreo01:5000/cookiemonster:latest
+        ports:
+        - containerPort: 8080
