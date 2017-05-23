@@ -11,10 +11,11 @@ import (
 )
 
 type KillPodData struct {
-	Kind string
-  Target int
-  Interval int
-  Duration int
+  Name      string  // name of pod base object
+	Kind      string  // Kubernetes object to look for
+  Target    int     // number of pods to kill at a time
+  Interval  int     // time between kills
+  Duration  int     // length of run
 }
 
 func KillPodStart(w http.ResponseWriter, r *http.Request) {
@@ -22,6 +23,7 @@ func KillPodStart(w http.ResponseWriter, r *http.Request) {
   podName := vars["podName"]
 
   var data KillPodData
+  data.Name = podName
   body, err := ioutil.ReadAll(io.LimitReader(r.Body, 1048576))
   if err != nil {
     panic(err)
@@ -37,24 +39,17 @@ func KillPodStart(w http.ResponseWriter, r *http.Request) {
     }
   }
 
-/*
-  t := RepoCreateTodo(todo)
-  w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-  w.WriteHeader(http.StatusCreated)
-  if err := json.NewEncoder(w).Encode(t); err != nil {
-      panic(err)
-  }
-*/
-
   fmt.Fprintln(w, "pod name: ", podName)
   fmt.Fprintln(w, "data: ", data)
+
+  startKillPod(data)
 }
 
 func KillPodStop(w http.ResponseWriter, r *http.Request) {
   vars := mux.Vars(r)
   podName := vars["podName"]
 
-  fmt.Fprintln(w, "pod name:", podName)
+  stopKillPod(podName)
 }
 
 func KillPodStatus(w http.ResponseWriter, r *http.Request) {
@@ -62,4 +57,8 @@ func KillPodStatus(w http.ResponseWriter, r *http.Request) {
   podName := vars["podName"]
 
   fmt.Fprintln(w, "pod name:", podName)
+}
+
+func KillPodStatuses(w http.ResponseWriter, r *http.Request) {
+  statusesKillPod()
 }

@@ -47,4 +47,10 @@ var routes = Routes {
     "/killpod/status/{podName}",
     KillPodStatus,
   },
+  Route{
+    "KillPodStatuses",
+    "GET",
+    "/killpod/status",
+    KillPodStatuses,
+  },
 }
