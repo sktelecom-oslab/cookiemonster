@@ -5,6 +5,8 @@ export GOPATH
 
 default: build-local
 
+all: vendor build docker
+
 build: build-darwin build-linux
 
 build-local:
