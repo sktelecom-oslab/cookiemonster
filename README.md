@@ -1,55 +1,49 @@
-# Lets break stuff and eat cookies
+## Lets break stuff and eat cookies
 
-## To build
+CookieMonster will eat your applications. And infrastructure. And possibly your cat if it gets too close.
+
+### Build
 ```
 make vendor
-make
+make build
 make docker
 ```
+- - -
+### Run locally without Docker
 
-## To run run locally
+##### Mac
+```
+./bin/cookiemonster-darwin-amd64 &
+```
+or
+##### Linux
+```
+./bin/cookiemonster-linux-amd64 &
+```
+
+### Run locally with Docker
 ```
 docker run -d -p 8080:8080 oreo01:5000/cookiemonster:latest
-curl -X POST -d '{"kind": "deployment", "target": 1, "interval": 30, "duration": 600}' -H "Content-Type: application/json" 'http://localhost:8080/killpod/start/mysql'
 ```
 
-## To deploy to a kubernetes cluster
+### Run on a Kubernetes cluster
 ```
 kubectl create -f ./k8s/
 ```
 
-# Capabilities
+Choose a host from the cluster and note the port that gets mapped
+```
+kubectl get svc cookiemonster
+```
+- - -
+### Test it
 
-Within a given namespace maintain list of
+##### Running locally
+```
+curl -X POST -d '{"kind": "deployment", "target": 1, "interval": 30, "duration": 600}' -H "Content-Type: application/json" 'http://localhost:8080/killpod/start/mysql'
+```
 
-- services
-- deployments
-- stateful sets
-- daemon sets
-
-# Modes of operation
-- single service
-- random  
-
-# K8S API functions
-- delete single pod in cluster
-- delete multiple non fatal number of pods in cluster
-- delete fatal number of pods in cluster
-- delete all pods in cluster
-- delete service
-- delete node
-
-
-# OS functions
-
-## kubernetes
-- stop kubelet process (restart after fixed time)
-- stop docker process (restart after fixed time)
-- stop network interface (restart after fixed time)
-- add excessive pods (~200) (cleanup after fixed time)
-
-## general
-- load CPU
-- fill memory
-- fill disk
-- reboot node
+##### Running on Kubernetes
+```
+curl -X POST -d '{"kind": "deployment", "target": 1, "interval": 30, "duration": 600}' -H "Content-Type: application/json" 'http://<host>:<port>/killpod/start/mysql'
+```
