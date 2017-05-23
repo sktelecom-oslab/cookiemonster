@@ -3,10 +3,17 @@
 GOPATH := ${PWD}/vendor:${GOPATH}
 export GOPATH
 
-default: build
+default: build-local
 
-build:
+build: build-darwin build-linux
+
+build-local:
+	go build -o bin/cookiemonster -v ./src/*.go
+
+build-darwin:
 	GOOS=linux go build -o bin/cookiemonster-linux-amd64 -v ./src/*.go
+
+build-linux:
 	GOOS=darwin go build -o bin/cookiemonster-darwin-amd64 -v ./src/*.go
 
 clean:

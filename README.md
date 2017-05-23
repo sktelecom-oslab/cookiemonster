@@ -8,7 +8,7 @@ make vendor
 make build
 make docker
 ```
-- - -
+
 ### Run locally without Docker
 
 ##### Mac
@@ -35,7 +35,7 @@ Choose a host from the cluster and note the port that gets mapped
 ```
 kubectl get svc cookiemonster
 ```
-- - -
+
 ### Test it
 
 ##### Running locally
