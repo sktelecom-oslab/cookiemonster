@@ -11,7 +11,7 @@ type Victim struct {
 }
 
 type PodState struct {
-  podData KillPodData
+  PodData KillPodData
   StartTime time.Time
   StopTime time.Time
   Kills int
@@ -19,6 +19,7 @@ type PodState struct {
 }
 
 var activePods []PodState
+var random string = "RANDOM"
 
 func startKillPod(data KillPodData)  {
   // make sure we're not already munching on this pod
@@ -31,26 +32,29 @@ func startKillPod(data KillPodData)  {
 
   if x == -1 {
     fmt.Printf("Starting to snack on %s\n", data.Name)
-    podState := PodState{data, time.Now(), time.Now(), 0, nil}
+    podState := PodState{}
+    podState.PodData = data
+    podState.StartTime = time.Now()
+    
     activePods = append(activePods, podState)
   } else {
     fmt.Printf("pod %s is already being munched, ignoring request\n", data.Name)
   }
 }
 
-func stopKillPod(podName string) {
+func stopKillPod(data KillPodData) {
   // find pod data
   x := -1
   for i, podState := range activePods {
-    if podState.podData.Name == podName {
+    if podState.podData.Name == data.Name {
       x = i
     }
   }
   if x > 0 {
-    fmt.Printf("Done snacking on %s, removing from position %d\n", podName, x)
+    fmt.Printf("Done snacking on %s, removing from position %d\n", data.Name, x)
     activePods = activePods[:x+copy(activePods[x:], activePods[x+1:])]
   } else {
-    fmt.Printf("%s is not currently getting munched\n", podName)
+    fmt.Printf("%s is not currently getting munched\n", data.Name)
   }
 }
 

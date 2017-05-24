@@ -11,19 +11,17 @@ import (
 )
 
 type KillPodData struct {
-  Name      string  // name of pod base object
-	Kind      string  // Kubernetes object to look for
-  Target    int     // number of pods to kill at a time
-  Interval  int     // time between kills
-  Duration  int     // length of run
+  Name      string  // name of pod base object, empty for random
+	Kind      string  // Kubernetes object to look for, if Name specified
+  NameSpace string  // Namespace to use, otherwise will consider all but kube-system
+  Target    int     // number of pods to kill at a time, defaults to 1
+  Interval  int     // time between kills, unspecified for single kill
+  Duration  int     // length of run, unspecified for single kill
 }
 
-func KillPodStart(w http.ResponseWriter, r *http.Request) {
-  vars := mux.Vars(r)
-  podName := vars["podName"]
-
+// parse JSON from request body and return data struct
+func readJSONData(r *http.Request) KillPodData {
   var data KillPodData
-  data.Name = podName
   body, err := ioutil.ReadAll(io.LimitReader(r.Body, 1048576))
   if err != nil {
     panic(err)
@@ -31,32 +29,30 @@ func KillPodStart(w http.ResponseWriter, r *http.Request) {
   if err := r.Body.Close(); err != nil {
     panic(err)
   }
+
   if err := json.Unmarshal(body, &data); err != nil {
-    w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-    w.WriteHeader(422) // unprocessable entity
-    if err := json.NewEncoder(w).Encode(err); err != nil {
-      panic(err)
-    }
+    panic(err)
   }
 
-  fmt.Fprintln(w, "pod name: ", podName)
-  fmt.Fprintln(w, "data: ", data)
+  fmt.Println("request data: ", data)
+  return data
+}
 
+func KillPodStart(w http.ResponseWriter, r *http.Request) {
+  data := readJSONData(r)
   startKillPod(data)
 }
 
 func KillPodStop(w http.ResponseWriter, r *http.Request) {
-  vars := mux.Vars(r)
-  podName := vars["podName"]
-
-  stopKillPod(podName)
+  data := readJSONData(r)
+  stopKillPod(data)
 }
 
 func KillPodStatus(w http.ResponseWriter, r *http.Request) {
   vars := mux.Vars(r)
   podName := vars["podName"]
 
-  fmt.Fprintln(w, "pod name:", podName)
+  fmt.Fprintln(w, "pod name: ", podName)
 }
 
 func KillPodStatuses(w http.ResponseWriter, r *http.Request) {

@@ -32,13 +32,13 @@ var routes = Routes {
   Route{
     "KillPodStart",
     "POST",
-    "/killpod/start/{podName}",
+    "/killpod/start/",
     KillPodStart,
   },
   Route{
     "KillPodStop",
     "POST",
-    "/killpod/stop/{podName}",
+    "/killpod/stop/",
     KillPodStop,
   },
   Route{
@@ -50,7 +50,7 @@ var routes = Routes {
   Route{
     "KillPodStatuses",
     "GET",
-    "/killpod/status",
+    "/killpod/status/",
     KillPodStatuses,
   },
 }
