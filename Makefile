@@ -10,6 +10,7 @@ all: vendor build docker
 build: build-darwin build-linux
 
 build-local:
+	gofmt -w ./src/*.go
 	go build -o bin/cookiemonster -v ./src/*.go
 
 build-darwin:
