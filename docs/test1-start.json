@@ -1,0 +1,8 @@
+{
+  "name": "rabbitmq",
+  "kind": "deployment",
+  "namespace": "test",
+  "target": 1,
+  "interval": 3s0,
+  "duration": 600
+}
