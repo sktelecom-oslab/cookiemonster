@@ -3,6 +3,6 @@
   "kind": "deployment",
   "namespace": "test",
   "target": 1,
-  "interval": 3s0,
+  "interval": 1,
   "duration": 600
 }

@@ -6,10 +6,10 @@ import (
 )
 
 type Route struct {
-	Name        string
-	Method      string
-	Pattern     string
-	HandlerFunc http.HandlerFunc
+	name        string
+	method      string
+	pattern     string
+	handlerFunc http.HandlerFunc
 }
 
 type Routes []Route
@@ -19,10 +19,10 @@ func NewRouter() *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
 	for _, route := range routes {
 		router.
-			Methods(route.Method).
-			Path(route.Pattern).
-			Name(route.Name).
-			Handler(route.HandlerFunc)
+			Methods(route.method).
+			Path(route.pattern).
+			Name(route.name).
+			Handler(route.handlerFunc)
 	}
 
 	return router
@@ -30,27 +30,27 @@ func NewRouter() *mux.Router {
 
 var routes = Routes{
 	Route{
-		"KillPodStart",
+		"killPodStart",
 		"POST",
 		"/killpod/start/",
-		KillPodStart,
+		killPodStart,
 	},
 	Route{
-		"KillPodStop",
+		"killPodStop",
 		"POST",
 		"/killpod/stop/",
-		KillPodStop,
+		killPodStop,
 	},
 	Route{
-		"KillPodStatus",
+		"killPodStatus",
 		"GET",
 		"/killpod/status/{podName}",
-		KillPodStatus,
+		killPodStatus,
 	},
 	Route{
-		"KillPodStatuses",
+		"killPodStatuses",
 		"GET",
 		"/killpod/status/",
-		KillPodStatuses,
+		killPodStatuses,
 	},
 }

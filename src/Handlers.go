@@ -12,8 +12,8 @@ import (
 
 type KillPodData struct {
 	Name      string // name of pod base object, empty for random
-	Kind      string // Kubernetes object to look for, if Name specified
-	NameSpace string // Namespace to use, otherwise will consider all but kube-system
+	Kind      string // Kubernetes object to abuse
+	Namespace string // Namespace to use, otherwise will consider all but kube-system
 	Target    int    // number of pods to kill at a time, defaults to 1
 	Interval  int    // time between kills, unspecified for single kill
 	Duration  int    // length of run, unspecified for single kill
@@ -21,7 +21,7 @@ type KillPodData struct {
 
 // parse JSON from request body and return data struct
 func readJSONData(r *http.Request) KillPodData {
-	var data KillPodData
+	data := KillPodData{}
 	body, err := ioutil.ReadAll(io.LimitReader(r.Body, 1048576))
 	if err != nil {
 		panic(err)
@@ -38,23 +38,23 @@ func readJSONData(r *http.Request) KillPodData {
 	return data
 }
 
-func KillPodStart(w http.ResponseWriter, r *http.Request) {
+func killPodStart(w http.ResponseWriter, r *http.Request) {
 	data := readJSONData(r)
 	startKillPod(data)
 }
 
-func KillPodStop(w http.ResponseWriter, r *http.Request) {
+func killPodStop(w http.ResponseWriter, r *http.Request) {
 	data := readJSONData(r)
 	stopKillPod(data)
 }
 
-func KillPodStatus(w http.ResponseWriter, r *http.Request) {
+func killPodStatus(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	podName := vars["podName"]
 
 	fmt.Fprintln(w, "pod name: ", podName)
 }
 
-func KillPodStatuses(w http.ResponseWriter, r *http.Request) {
+func killPodStatuses(w http.ResponseWriter, r *http.Request) {
 	statusesKillPod()
 }
