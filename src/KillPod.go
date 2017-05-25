@@ -71,6 +71,7 @@ func killPod(name, kind, ns string, n int) {
 			x := rand.Intn(len(pods.Items))
 			p := pods.Items[x].ObjectMeta.Name
 			log.Printf("Eating pod %s NOM NOM NOM!!!!", p)
+			postSlack("Eating pod " + p + "!!!!  NOM! NOM! NOM!")
 			c.CoreV1().Pods(ns).Delete(p, &v1.DeleteOptions{})
 		}
 	}
