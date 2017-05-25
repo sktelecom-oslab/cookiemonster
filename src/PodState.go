@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"time"
 )
 
@@ -31,28 +31,26 @@ func startKillPod(data KillPodData) {
 	}
 
 	if x == -1 {
-		fmt.Printf("Starting to snack on %s\n", data.Name)
+		log.Printf("Starting to snack on %s\n", data.Name)
 		podState := PodState{}
 		podState.name = data.Name
 		podState.startTime = time.Now()
 		podState.ticker = time.NewTicker(time.Second * time.Duration(data.Interval))
-		//podState.ticker = time.NewTicker(time.Second * 30)
+		log.Println("COOKIES!!!!")
 		go func() {
-			for t := range podState.ticker.C {
-				fmt.Println("COOKIES!!!!", t)
-				killPod(data.Kind, data.Namespace, data.Target)
+			for range podState.ticker.C {
+				killPod(data.Name, data.Kind, data.Namespace, data.Target)
 			}
 		}()
 
 		activePods = append(activePods, podState)
 	} else {
-		fmt.Printf("pod %s is already being munched, ignoring request\n", data.Name)
+		log.Printf("pod %s is already being munched, ignoring request\n", data.Name)
 	}
 
 }
 
 func stopKillPod(data KillPodData) {
-	// find pod data
 	x := -1
 	for i, podState := range activePods {
 		if podState.name == data.Name {
@@ -61,17 +59,17 @@ func stopKillPod(data KillPodData) {
 		}
 	}
 	if x != -1 {
-		fmt.Printf("Done snacking on %s, removing from position %d\n", data.Name, x)
+		log.Printf("Done snacking on %s, removing from position %d\n", data.Name, x)
 		activePods = activePods[:x+copy(activePods[x:], activePods[x+1:])]
 	} else {
-		fmt.Printf("%s is not currently getting munched\n", data.Name)
+		log.Printf("%s is not currently getting munched\n", data.Name)
 	}
 }
 
 func statusesKillPod() {
-	fmt.Print("Currently Running Pods: ")
+	log.Print("Currently Running Pods: ")
 	for _, podState := range activePods {
-		fmt.Print(podState.name + " ")
+		log.Print(podState.name + " ")
 	}
-	fmt.Println()
+	log.Println()
 }

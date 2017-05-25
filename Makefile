@@ -29,5 +29,6 @@ docker:
 vendor:
 	rm -rf ./vendor
 	GOPATH=${PWD}/vendor go get github.com/gorilla/mux
+	GOPATH=${PWD}/vendor go get k8s.io/apimachinery/pkg/apis/meta/v1
 	GOPATH=${PWD}/vendor go get k8s.io/client-go/kubernetes
 	GOPATH=${PWD}/vendor go get k8s.io/client-go/rest

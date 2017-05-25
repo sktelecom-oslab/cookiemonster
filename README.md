@@ -38,12 +38,23 @@ kubectl get svc cookiemonster
 
 ### Test it
 
+##### Deploy stuff
+```
+kubectl create ns test
+kubectl create clusterrolebinding test --clusterrole=cluster-admin --serviceaccount=test:default
+helm-2.2.3 install skt/etcd --name etcdtest --namespace test --version 0.1.0
+helm-2.2.3 install skt/rabbitmq --name rabbitmqtest --namespace test --set replicas=7 --version 0.1.0
+```
+
 ##### Running locally
 ```
-curl -X POST -d '{"kind": "deployment", "target": 1, "interval": 30, "duration": 600}' -H "Content-Type: application/json" 'http://localhost:8080/killpod/start/mysql'
+curl -X POST -d '{"kind": "deployment", "target": 1, "interval": 30, "duration": 600}' -H "Content-Type: application/json" 'http://localhost:8080/killpod/start/'
 ```
 
 ##### Running on Kubernetes
 ```
-curl -X POST -d '{"kind": "deployment", "target": 1, "interval": 30, "duration": 600}' -H "Content-Type: application/json" 'http://<host>:<port>/killpod/start/mysql'
+curl -X POST -d '{"kind": "deployment", "target": 1, "interval": 30, "duration": 600}' -H "Content-Type: application/json" 'http://<host>:<port>/killpod/start/'
 ```
+
+helm install skt/etcd --name etcdtest --namespace test --version 0.1.0
+helm install skt/rabbitmq --name rabbitmqtest --namespace test --set replicas=7 --version 0.1.0

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -34,13 +35,14 @@ func readJSONData(r *http.Request) KillPodData {
 		panic(err)
 	}
 
-	fmt.Println("request data: ", data)
+	log.Println("request data: ", data)
 	return data
 }
 
 func killPodStart(w http.ResponseWriter, r *http.Request) {
 	data := readJSONData(r)
 	startKillPod(data)
+	fmt.Fprintln(w, "Munching has begun")
 }
 
 func killPodStop(w http.ResponseWriter, r *http.Request) {
