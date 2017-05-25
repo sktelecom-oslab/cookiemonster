@@ -33,13 +33,18 @@ nU9FCNAFG774IGrQVS44aDGkH+C7MHW6eM5hQ7XVGbd2CAhVgyyhuWuA9g==
 
 // choose a pod of parent 'kind' from 'namespace' and kind 'n' of them
 func killPod(name, kind, ns string, n int) {
-	// config, err := rest.InClusterConfig()
 
-	config := &rest.Config{
-		Host:            server,
-		BearerToken:     token,
-		TLSClientConfig: rest.TLSClientConfig{CAData: caData},
+	var config *rest.Config
+	if inKubeCluster {
+		config, _ = rest.InClusterConfig()
+	} else {
+		config = &rest.Config{
+			Host:            server,
+			BearerToken:     token,
+			TLSClientConfig: rest.TLSClientConfig{CAData: caData},
+		}
 	}
+
 	c, err := kubernetes.NewForConfig(config)
 	if err != nil {
 		panic(err.Error())
