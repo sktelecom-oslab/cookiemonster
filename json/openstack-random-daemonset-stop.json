@@ -1,0 +1,4 @@
+{
+  "kind": "daemonset",
+  "namespace": "openstack"
+}

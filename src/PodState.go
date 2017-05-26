@@ -23,7 +23,7 @@ var activePods []PodState
 
 func startKillPod(data KillPodData) {
 	// make sure we're not already munching on this pod
-	psName := data.Name + "-" + data.Namespace
+	psName := data.Namespace + "-" + data.Kind + "-" + data.Name
 	x := -1
 	for i, podState := range activePods {
 		if podState.name == psName {
@@ -59,7 +59,7 @@ func startKillPod(data KillPodData) {
 }
 
 func stopKillPod(data KillPodData) {
-	psName := data.Name + "-" + data.Namespace
+	psName := data.Namespace + "-" + data.Kind + "-" + data.Name
 
 	x := -1
 	for i, podState := range activePods {

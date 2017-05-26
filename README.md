@@ -43,8 +43,10 @@ kubectl get svc cookiemonster
 kubectl create ns test
 kubectl create clusterrolebinding test --clusterrole=cluster-admin --serviceaccount=test:default
 kubectl create clusterrolebinding test --clusterrole=cluster-admin --serviceaccount=default:default
-helm-2.2.3 install skt/etcd --name etcdtest --namespace test --version 0.1.0
-helm-2.2.3 install skt/rabbitmq --name rabbitmqtest --namespace test --set replicas=7 --version 0.1.0
+kubectl create secret generic ceph-secret-user --from-literal=key=AQCPrrdYbn6PJxAAWymornUUVbCkgWN6h+mPFg== --namespace=test
+helm-2.2.3 install skt/etcd --name etcd --namespace test --version 0.1.0
+helm-2.2.3 install skt/rabbitmq --name rabbitmq --namespace test --set replicas=7 --version 0.1.0
+helm-2.2.3 install skt/mariadb --name mariadb --namespace test --set replicas=7 --version 0.1.0
 ```
 
 ##### Running locally

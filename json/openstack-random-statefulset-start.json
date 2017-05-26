@@ -1,0 +1,8 @@
+{
+  "kind": "statefulset",
+  "namespace": "openstack",
+  "target": 1,
+  "interval": 10,
+  "duration": 600,
+  "slack": true
+}

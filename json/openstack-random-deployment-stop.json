@@ -1,3 +1,4 @@
 {
+  "kind": "deployment",
   "namespace": "openstack"
 }
