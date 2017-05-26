@@ -18,6 +18,7 @@ type KillPodData struct {
 	Target    int    // number of pods to kill at a time, defaults to 1
 	Interval  int    // time between kills, unspecified for single kill
 	Duration  int    // length of run, unspecified for single kill
+	Slack     bool   // output to Slack
 }
 
 // parse JSON from request body and return data struct

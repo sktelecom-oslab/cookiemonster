@@ -1,7 +1,0 @@
-{
-  "kind": "deployment",
-  "namespace": "test",
-  "target": 1,
-  "interval": 30,
-  "duration": 600
-}

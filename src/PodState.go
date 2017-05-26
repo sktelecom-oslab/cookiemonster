@@ -23,23 +23,35 @@ var activePods []PodState
 
 func startKillPod(data KillPodData) {
 	// make sure we're not already munching on this pod
+	psName := data.Name + "-" + data.Namespace
 	x := -1
 	for i, podState := range activePods {
-		if podState.name == data.Name {
+		if podState.name == psName {
 			x = i
 		}
 	}
 
 	if x == -1 {
-		log.Printf("Starting to snack on %s\n", data.Name)
-		podState := PodState{}
-		podState.name = data.Name
-		podState.startTime = time.Now()
-		podState.ticker = time.NewTicker(time.Second * time.Duration(data.Interval))
-		log.Println("COOKIES!!!!")
+		//log.Printf("Starting to snack on %s\n", data.Name)
+		podState := PodState{
+			name:      psName,
+			startTime: time.Now(),
+			ticker:    time.NewTicker(time.Second * time.Duration(data.Interval)),
+		}
+		//podState.name = data.Name
+		//podState.startTime = time.Now()
+		//podState.ticker = time.NewTicker(time.Second * time.Duration(data.Interval))
+		if data.Name == "" {
+			log.Printf("Cookie Time!!! Random feast starting on %s in namespace %s", data.Kind, data.Namespace)
+		} else {
+			log.Printf("Cookie Time!!! Feast starting on %s %s in namespace %s", data.Name, data.Kind, data.Namespace)
+		}
 		go func() {
 			for range podState.ticker.C {
-				killPod(data.Name, data.Kind, data.Namespace, data.Target)
+				if victimName := killPod(data.Name, data.Kind, data.Namespace, data.Target, data.Slack); victimName != "" {
+					v := Victim{podName: victimName, timeOfDeath: time.Now()}
+					podState.victims = append(podState.victims, v)
+				}
 			}
 		}()
 
@@ -51,9 +63,11 @@ func startKillPod(data KillPodData) {
 }
 
 func stopKillPod(data KillPodData) {
+	psName := data.Name + "-" + data.Namespace
+
 	x := -1
 	for i, podState := range activePods {
-		if podState.name == data.Name {
+		if podState.name == psName {
 			podState.ticker.Stop()
 			x = i
 		}

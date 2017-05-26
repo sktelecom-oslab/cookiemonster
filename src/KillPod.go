@@ -3,9 +3,11 @@ package main
 import (
 	"log"
 	"math/rand"
+	"time"
 
 	"k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/pkg/apis/apps/v1beta1"
 	"k8s.io/client-go/rest"
 )
 
@@ -31,12 +33,18 @@ IpR/2o/xxMSpXf/i2dxTwOLoSgCpn9mVgcK9lPhS3aIKSUPX69Rgvajzu0svjNv7
 nU9FCNAFG774IGrQVS44aDGkH+C7MHW6eM5hQ7XVGbd2CAhVgyyhuWuA9g==
 -----END CERTIFICATE-----`)
 
-// choose a pod of parent 'kind' from 'namespace' and kind 'n' of them
-func killPod(name, kind, ns string, n int) {
+func randomInt(i int) int {
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	return r.Intn(i)
+}
 
+func kubeConnect() (*kubernetes.Clientset, error) {
 	var config *rest.Config
 	if inKubeCluster {
-		config, _ = rest.InClusterConfig()
+		var err error
+		if config, err = rest.InClusterConfig(); err != nil {
+			return nil, err
+		}
 	} else {
 		config = &rest.Config{
 			Host:            server,
@@ -45,39 +53,73 @@ func killPod(name, kind, ns string, n int) {
 		}
 	}
 
-	c, err := kubernetes.NewForConfig(config)
-	if err != nil {
-		panic(err.Error())
-	}
+	return kubernetes.NewForConfig(config)
+}
 
+func victimDeployment(c *kubernetes.Clientset, ns, name string) v1beta1.Deployment {
+
+	// list existing deployments in the namespace
 	d := v1.ListOptions{}
-
 	deployments, err := c.AppsV1beta1().Deployments(ns).List(d)
 	if err != nil {
 		panic(err.Error())
 	}
 
-	for _, d := range deployments.Items {
-		if d.ObjectMeta.Name == name {
-			log.Printf("found %s %s in namespace %s\n", kind, name, ns)
-			s := ""
-			for k, v := range d.Spec.Selector.MatchLabels {
-				s = s + k + "=" + v + ","
+	var deployment v1beta1.Deployment
+
+	if name == "" {
+		// no name specified, choose one at random
+		x := randomInt(len(deployments.Items))
+		deployment = deployments.Items[x]
+	} else {
+		// find the specified deployment
+		for _, d := range deployments.Items {
+			if d.ObjectMeta.Name == name {
+				deployment = d
 			}
-			s = s[:len(s)-1]
-			lo := v1.ListOptions{LabelSelector: s}
-			pods, err := c.CoreV1().Pods(ns).List(lo)
-			if err != nil {
-				panic(err.Error())
-			}
-			for _, p := range pods.Items {
-				log.Printf("Pod found: %s\n", p.ObjectMeta.Name)
-			}
-			x := rand.Intn(len(pods.Items))
-			p := pods.Items[x].ObjectMeta.Name
-			log.Printf("Eating pod %s NOM NOM NOM!!!!", p)
-			//postSlack("Eating pod " + p + "!!!!  NOM! NOM! NOM!")
-			c.CoreV1().Pods(ns).Delete(p, &v1.DeleteOptions{})
 		}
 	}
+	return deployment
+}
+
+// choose a pod of parent 'kind' from 'namespace' and kind 'n' of them
+func killPod(name, kind, ns string, n int, slackOut bool) string {
+	var victimName string
+
+	c, err := kubeConnect()
+	if err != nil {
+		panic(err.Error())
+	}
+
+	vd := victimDeployment(c, ns, name)
+	if &vd == nil {
+		log.Printf("Can not find %s %s in namespace %s, doing nothing", kind, name, ns)
+		return ""
+	}
+
+	log.Printf("Found %s %s in namespace %s\n", kind, vd.ObjectMeta.Name, ns)
+
+	// convert Selector to ListOption
+	s := ""
+	for k, v := range vd.Spec.Selector.MatchLabels {
+		s = s + k + "=" + v + ","
+	}
+	s = s[:len(s)-1]
+	lo := v1.ListOptions{LabelSelector: s}
+
+	// query pods
+	pods, err := c.CoreV1().Pods(ns).List(lo)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	x := randomInt(len(pods.Items))
+	victimName = pods.Items[x].ObjectMeta.Name
+	log.Printf("Eating pod %s NOM NOM NOM!!!!", victimName)
+	if slackOut {
+		postSlack("Eating pod " + victimName + " from namespace " + ns + "!!!!  NOM! NOM! NOM!")
+	}
+	c.CoreV1().Pods(ns).Delete(victimName, &v1.DeleteOptions{})
+
+	return victimName
 }
