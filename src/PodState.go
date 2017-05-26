@@ -32,15 +32,11 @@ func startKillPod(data KillPodData) {
 	}
 
 	if x == -1 {
-		//log.Printf("Starting to snack on %s\n", data.Name)
 		podState := PodState{
 			name:      psName,
 			startTime: time.Now(),
 			ticker:    time.NewTicker(time.Second * time.Duration(data.Interval)),
 		}
-		//podState.name = data.Name
-		//podState.startTime = time.Now()
-		//podState.ticker = time.NewTicker(time.Second * time.Duration(data.Interval))
 		if data.Name == "" {
 			log.Printf("Cookie Time!!! Random feast starting on %s in namespace %s", data.Kind, data.Namespace)
 		} else {
