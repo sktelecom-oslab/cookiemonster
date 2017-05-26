@@ -6,6 +6,7 @@ import (
 
 const (
 	webhookUrl  = "https://hooks.slack.com/services/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"
+	apiToken    = "AIzaSyA-sd-Yb9aJepc0nh_LuWabpRRQoJelA3I"
 	channelName = "jenkins"
 )
 
