@@ -19,6 +19,7 @@ type KillPodData struct {
 	Interval  int    // time between kills, unspecified for single kill
 	Duration  int    // length of run, unspecified for single kill
 	Slack     bool   // output to Slack
+	Fatal     bool   // never perform an operation which is unrecoverable
 }
 
 // parse JSON from request body and return data struct
