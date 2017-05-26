@@ -51,13 +51,11 @@ helm-2.2.3 install skt/mariadb --name mariadb --namespace test --set replicas=7 
 
 ##### Running locally
 ```
-curl -X POST -d '{"kind": "deployment", "target": 1, "interval": 30, "duration": 600}' -H "Content-Type: application/json" 'http://localhost:8080/killpod/start/'
+curl -H "Content-Type: application/json" -X POST -d @./json/openstack-random-deployment-start.json 'http://localhost:8080/killpod/start/'
+curl -H "Content-Type: application/json" -X POST -d @./json/openstack-random-deployment-stop.json 'http://localhost:8080/killpod/stop/'
 ```
 
 ##### Running on Kubernetes
 ```
 curl -X POST -d '{"kind": "deployment", "target": 1, "interval": 30, "duration": 600}' -H "Content-Type: application/json" 'http://<host>:<port>/killpod/start/'
 ```
-
-helm install skt/etcd --name etcdtest --namespace test --version 0.1.0
-helm install skt/rabbitmq --name rabbitmqtest --namespace test --set replicas=7 --version 0.1.0
