@@ -148,7 +148,7 @@ func victimDaemonSet(c *kubernetes.Clientset, ns, name string) (extv1beta1.Daemo
 }
 
 // choose a pod of parent 'kind' from 'namespace' and kind 'n' of them
-func killPod(name, kind, ns string, n int, slackOut bool) string {
+func killPod(queryName, kind, ns string, n int, slackOut bool) string {
 
 	c, err := kubeConnect()
 	if err != nil {
@@ -160,27 +160,60 @@ func killPod(name, kind, ns string, n int, slackOut bool) string {
 
 	switch kind {
 	case "deployment":
-		vd, found := victimDeployment(c, ns, name)
+		vd, found := victimDeployment(c, ns, queryName)
+		name := vd.ObjectMeta.Name
 		if !found {
 			log.Printf("Can not find %s %s in namespace %s, doing nothing", kind, name, ns)
 			return ""
 		}
-		log.Printf("Found %s %s in namespace %s\n", kind, vd.ObjectMeta.Name, ns)
+		// deployments should remain functional as long as a single pod is
+		// available, but rabbitmq is an exception
+		log.Printf("%s %s in namespace %s has %d pods defined, %d available and %d unavailable ",
+			kind, name, ns, *vd.Spec.Replicas, vd.Status.AvailableReplicas, vd.Status.UnavailableReplicas)
+		if name == "rabbitmq" {
+			if (*vd.Spec.Replicas/2 + 1) >= vd.Status.AvailableReplicas {
+				log.Printf("available pods less than unavailable pods, doing nothing")
+				return ""
+			}
+		} else {
+			if vd.Status.AvailableReplicas < 2 {
+				log.Printf("Only one pod available, doing nothing")
+				return ""
+			}
+		}
+
+		log.Printf("Found %s %s in namespace %s\n", kind, name, ns)
 		matchLabels = vd.Spec.Selector.MatchLabels
 	case "statefulset":
-		vss, found := victimStatefulSet(c, ns, name)
+		vss, found := victimStatefulSet(c, ns, queryName)
+		name := vss.ObjectMeta.Name
 		if !found {
 			log.Printf("Can not find %s %s in namespace %s, doing nothing", kind, name, ns)
 			return ""
 		}
+		log.Printf("%s %s in namespace %s has %d pods defined, %d available",
+			kind, name, ns, *vss.Spec.Replicas, vss.Status.Replicas)
+		if (*vss.Spec.Replicas/2 + 1) >= vss.Status.Replicas {
+			log.Printf("available pods less than unavailable pods, doing nothing")
+			return ""
+		}
+
 		log.Printf("Found %s %s in namespace %s\n", kind, vss.ObjectMeta.Name, ns)
 		matchLabels = vss.Spec.Selector.MatchLabels
 	case "daemonset":
-		vds, found := victimDaemonSet(c, ns, name)
+		vds, found := victimDaemonSet(c, ns, queryName)
+		name := vds.ObjectMeta.Name
 		if !found {
 			log.Printf("Can not find %s %s in namespace %s, doing nothing", kind, name, ns)
 			return ""
 		}
+		log.Printf("%s %s in namespace %s has %d pods defined, %d available",
+			kind, name, ns, vds.Status.DesiredNumberScheduled, vds.Status.NumberReady)
+		if vds.Status.NumberReady < 2 {
+			log.Printf("available pods less than unavailable pods, doing nothing")
+			return ""
+		}
+
 		log.Printf("Found %s %s in namespace %s\n", kind, vds.ObjectMeta.Name, ns)
 		matchLabels = vds.Spec.Selector.MatchLabels
 	}

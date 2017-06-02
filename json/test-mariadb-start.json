@@ -2,7 +2,6 @@
   "name": "mariadb",
   "kind": "statefulset",
   "namespace": "test",
-  "target": 1,
-  "interval": 20,
+  "interval": 15,
   "duration": 600
 }

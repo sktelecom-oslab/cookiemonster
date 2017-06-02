@@ -2,7 +2,6 @@
   "name": "rabbitmq",
   "kind": "deployment",
   "namespace": "test",
-  "target": 1,
-  "interval": 12,
+  "interval": 10,
   "duration": 600
 }
