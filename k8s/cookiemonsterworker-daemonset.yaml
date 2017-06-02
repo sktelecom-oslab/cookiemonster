@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  labels:
+    app: cookiemonsterworker
+  name: cookiemonsterworker
+spec:
+  template:
+    metadata:
+      labels:
+        app: cookiemonsterworker
+    spec:
+      hostIPC: true
+      hostPID: true
+      hostNetwork: true
+      containers:
+      - name: cookiemonsterworker
+        image: oreo01:5000/cookiemonsterworker:latest
+        ports:
+        - containerPort: 8081
+        securityContext:
+          privileged: true
