@@ -2,7 +2,7 @@
   "kind": "daemonset",
   "namespace": "openstack",
   "target": 1,
-  "interval": 10,
+  "interval": 60,
   "duration": 600,
   "slack": true
 }
