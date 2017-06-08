@@ -51,8 +51,8 @@ helm install skt/mariadb --name mariadbtest --namespace test --set replicas=7 --
 
 ##### Running locally
 ```
-curl -H "Content-Type: application/json" -X POST -d @./json/openstack-random-deployment-start.json 'http://localhost:8080/killpod/start/'
-curl -H "Content-Type: application/json" -X POST -d @./json/openstack-random-deployment-stop.json 'http://localhost:8080/killpod/stop/'
+curl -H "Content-Type: application/json" -X POST -d @./json/openstack-random-deployment.json 'http://localhost:8080/killpod/start/'
+curl -H "Content-Type: application/json" -X POST -d @./json/openstack-random-deployment.json 'http://localhost:8080/killpod/stop/'
 ```
 
 ##### Running on Kubernetes

@@ -48,7 +48,7 @@ func startKillPod(data KillPodData) {
 	}
 	go func() {
 		for range podState.ticker.C {
-			if victimName := killPod(data.Name, data.Kind, data.Namespace, data.Target, data.Slack); victimName != "" {
+			if victimName := killPod(data.Name, data.Kind, data.Namespace, data.Slack); victimName != "" {
 				v := Victim{podName: victimName, timeOfDeath: time.Now()}
 				podState.victims = append(podState.victims, v)
 			}

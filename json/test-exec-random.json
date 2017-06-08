@@ -1,0 +1,14 @@
+{
+  "target": "all",
+  "commands": [
+    {
+      "command": "hostname"
+    },
+    {
+      "command": "ps",
+      "parameters": [
+        "aux"
+      ]
+    }
+  ]
+}

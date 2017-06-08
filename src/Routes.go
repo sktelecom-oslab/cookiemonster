@@ -53,4 +53,22 @@ var routes = Routes{
 		"/killpod/status/",
 		killPodStatuses,
 	},
+	Route{
+		"nodeExecStart",
+		"POST",
+		"/nodeexec/start/",
+		nodeExecStart,
+	},
+	Route{
+		"nodeExecStatus",
+		"POST",
+		"/nodeexec/status/",
+		nodeExecStatus,
+	},
+	Route{
+		"nodeExecStatusDetails",
+		"POST",
+		"/nodeexec/status/{id}",
+		nodeExecStatusDetails,
+	},
 }

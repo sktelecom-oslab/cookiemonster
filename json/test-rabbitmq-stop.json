@@ -1,5 +1,0 @@
-{
-  "name": "rabbitmq",
-  "kind": "deployment",
-  "namespace": "test"
-}

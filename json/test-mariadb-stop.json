@@ -1,6 +1,0 @@
-{
-  "name": "mariadb",
-  "kind": "statefulset",
-  "namespace": "test",
-  "recoverable": true
-}

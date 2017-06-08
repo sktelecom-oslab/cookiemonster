@@ -1,0 +1,15 @@
+{
+  "target": "kube-node02",
+  "async": true,
+  "commands": [
+    {
+      "command": "date"
+    },
+    {
+      "command": "ls",
+      "parameters": [
+        "-l"
+      ]
+    }
+  ]
+}

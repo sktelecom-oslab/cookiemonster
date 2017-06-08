@@ -1,14 +1,16 @@
 package main
 
 import (
+	"errors"
 	"log"
 	"math/rand"
 	"time"
 
-	"k8s.io/apimachinery/pkg/apis/meta/v1"
+	meta_v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
-	appsv1beta1 "k8s.io/client-go/pkg/apis/apps/v1beta1"
-	extv1beta1 "k8s.io/client-go/pkg/apis/extensions/v1beta1"
+	v1 "k8s.io/client-go/pkg/api/v1"
+	apps_v1beta1 "k8s.io/client-go/pkg/apis/apps/v1beta1"
+	ext_v1beta1 "k8s.io/client-go/pkg/apis/extensions/v1beta1"
 	"k8s.io/client-go/rest"
 )
 
@@ -57,13 +59,13 @@ func kubeConnect() (*kubernetes.Clientset, error) {
 	return kubernetes.NewForConfig(config)
 }
 
-func victimDeployment(c *kubernetes.Clientset, ns, name string) (appsv1beta1.Deployment, bool) {
-	var deployment appsv1beta1.Deployment
+func victimDeployment(c *kubernetes.Clientset, ns, name string) (apps_v1beta1.Deployment, bool) {
+	var deployment apps_v1beta1.Deployment
 	var found bool
 
 	if name == "" {
 		// no name specified, choose one at random
-		lo := v1.ListOptions{}
+		lo := meta_v1.ListOptions{}
 		deployments, err := c.AppsV1beta1().Deployments(ns).List(lo)
 		if err != nil {
 			panic(err.Error())
@@ -73,7 +75,7 @@ func victimDeployment(c *kubernetes.Clientset, ns, name string) (appsv1beta1.Dep
 		found = true
 	} else {
 		// query named deployment set via name provided
-		lo := v1.ListOptions{FieldSelector: "metadata.name=" + name}
+		lo := meta_v1.ListOptions{FieldSelector: "metadata.name=" + name}
 		deployments, err := c.AppsV1beta1().Deployments(ns).List(lo)
 		if err != nil {
 			panic(err.Error())
@@ -87,13 +89,13 @@ func victimDeployment(c *kubernetes.Clientset, ns, name string) (appsv1beta1.Dep
 	return deployment, found
 }
 
-func victimStatefulSet(c *kubernetes.Clientset, ns, name string) (appsv1beta1.StatefulSet, bool) {
-	var statefulset appsv1beta1.StatefulSet
+func victimStatefulSet(c *kubernetes.Clientset, ns, name string) (apps_v1beta1.StatefulSet, bool) {
+	var statefulset apps_v1beta1.StatefulSet
 	var found bool
 
 	if name == "" {
 		// no name specified, choose one at random
-		lo := v1.ListOptions{}
+		lo := meta_v1.ListOptions{}
 		statefulsets, err := c.AppsV1beta1().StatefulSets(ns).List(lo)
 		if err != nil {
 			panic(err.Error())
@@ -103,7 +105,7 @@ func victimStatefulSet(c *kubernetes.Clientset, ns, name string) (appsv1beta1.St
 		found = true
 	} else {
 		// query named statefulset via name provided
-		lo := v1.ListOptions{FieldSelector: "metadata.name=" + name}
+		lo := meta_v1.ListOptions{FieldSelector: "metadata.name=" + name}
 		statefulsets, err := c.AppsV1beta1().StatefulSets(ns).List(lo)
 		if err != nil {
 			panic(err.Error())
@@ -117,13 +119,13 @@ func victimStatefulSet(c *kubernetes.Clientset, ns, name string) (appsv1beta1.St
 	return statefulset, found
 }
 
-func victimDaemonSet(c *kubernetes.Clientset, ns, name string) (extv1beta1.DaemonSet, bool) {
-	var daemonset extv1beta1.DaemonSet
+func victimDaemonSet(c *kubernetes.Clientset, ns, name string) (ext_v1beta1.DaemonSet, bool) {
+	var daemonset ext_v1beta1.DaemonSet
 	var found bool
 
 	if name == "" {
 		// no name specified, choose one at random
-		lo := v1.ListOptions{}
+		lo := meta_v1.ListOptions{}
 		daemonsets, err := c.ExtensionsV1beta1().DaemonSets(ns).List(lo)
 		if err != nil {
 			panic(err.Error())
@@ -133,7 +135,7 @@ func victimDaemonSet(c *kubernetes.Clientset, ns, name string) (extv1beta1.Daemo
 		found = true
 	} else {
 		// query named daemonset via name provided
-		lo := v1.ListOptions{FieldSelector: "metadata.name=" + name}
+		lo := meta_v1.ListOptions{FieldSelector: "metadata.name=" + name}
 		daemonsets, err := c.ExtensionsV1beta1().DaemonSets(ns).List(lo)
 		if err != nil {
 			panic(err.Error())
@@ -147,8 +149,30 @@ func victimDaemonSet(c *kubernetes.Clientset, ns, name string) (extv1beta1.Daemo
 	return daemonset, found
 }
 
-// choose a pod of parent 'kind' from 'namespace' and kind 'n' of them
-func killPod(queryName, kind, ns string, n int, slackOut bool) string {
+func victimNode(c *kubernetes.Clientset, name string) (*v1.Node, bool) {
+	if name == "" {
+		// no name specified, choose one at random
+		lo := meta_v1.ListOptions{}
+		nodes, err := c.CoreV1().Nodes().List(lo)
+		if err != nil {
+			panic(err.Error())
+		}
+		x := randomInt(len(nodes.Items))
+		node := nodes.Items[x]
+		return &node, true
+	} else {
+		// query named daemonset via name provided
+		opt := meta_v1.GetOptions{}
+		node, err := c.CoreV1().Nodes().Get(name, opt)
+		if err != nil {
+			panic(err.Error())
+		}
+		return node, true
+	}
+}
+
+// choose a pod of parent 'kind' from 'namespace'
+func killPod(queryName, kind, ns string, slackOut bool) string {
 
 	c, err := kubeConnect()
 	if err != nil {
@@ -224,7 +248,7 @@ func killPod(queryName, kind, ns string, n int, slackOut bool) string {
 		s = s + k + "=" + v + ","
 	}
 	s = s[:len(s)-1]
-	lo := v1.ListOptions{LabelSelector: s}
+	lo := meta_v1.ListOptions{LabelSelector: s}
 
 	// query pods
 	pods, err := c.CoreV1().Pods(ns).List(lo)
@@ -238,7 +262,42 @@ func killPod(queryName, kind, ns string, n int, slackOut bool) string {
 	if slackOut {
 		postSlack("Eating pod " + victimName + " from namespace " + ns + "!!!!  NOM! NOM! NOM!")
 	}
-	c.CoreV1().Pods(ns).Delete(victimName, &v1.DeleteOptions{})
+	c.CoreV1().Pods(ns).Delete(victimName, &meta_v1.DeleteOptions{})
 
 	return victimName
+}
+
+func nodeIP(n *v1.Node) (string, error) {
+	addresses := n.Status.Addresses
+	for _, na := range addresses {
+		if na.Type == v1.NodeInternalIP {
+			return na.Address, nil
+		}
+	}
+	return "", errors.New("Node " + n.ObjectMeta.Name + " IP not found")
+}
+
+func doExec(data ExecData) ([]byte, error) {
+	c, err := kubeConnect()
+	if err != nil {
+		return nil, err
+	}
+
+	n, found := victimNode(c, data.Target)
+	name := n.ObjectMeta.Name
+	if !found {
+		log.Printf("Can not find node %s", name)
+		return nil, errors.New("AAAHHHH!!!")
+	}
+	ip, err := nodeIP(n)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := sendCommands(ip, data.Commands)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
 }
