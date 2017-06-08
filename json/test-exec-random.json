@@ -1,13 +1,19 @@
 {
-  "target": "all",
+  "target": "",
   "commands": [
     {
       "command": "hostname"
     },
     {
-      "command": "ps",
+      "command": "sleep",
       "parameters": [
-        "aux"
+        "10"
+      ]
+    },
+    {
+      "command": "df",
+      "parameters": [
+        "-h"
       ]
     }
   ]

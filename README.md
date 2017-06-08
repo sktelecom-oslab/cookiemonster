@@ -57,5 +57,6 @@ curl -H "Content-Type: application/json" -X POST -d @./json/openstack-random-dep
 
 ##### Running on Kubernetes
 ```
-curl -X POST -d '{"kind": "deployment", "target": 1, "interval": 30, "duration": 600}' -H "Content-Type: application/json" 'http://<host>:<port>/killpod/start/'
+curl -H "Content-Type: application/json" -X POST -d @./json/test-rabbitmq.json 'http://oreo07:32568/killpod/start/'
+curl -H "Content-Type: application/json" -X POST -d @./json/test-exec-random.json 'http://oreo07:32568/nodeexec/start/'
 ```

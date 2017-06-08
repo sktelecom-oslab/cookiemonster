@@ -1,7 +1,9 @@
 {
   "target": "kube-node02",
-  "async": true,
   "commands": [
+    {
+      "command": "hostname"
+    },
     {
       "command": "date"
     },
