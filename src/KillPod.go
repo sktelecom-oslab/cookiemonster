@@ -6,11 +6,11 @@ import (
 	"math/rand"
 	"time"
 
+	apps_v1beta1 "k8s.io/api/apps/v1beta1"
+	v1 "k8s.io/api/core/v1"
+	ext_v1beta1 "k8s.io/api/extensions/v1beta1"
 	meta_v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
-	v1 "k8s.io/client-go/pkg/api/v1"
-	apps_v1beta1 "k8s.io/client-go/pkg/apis/apps/v1beta1"
-	ext_v1beta1 "k8s.io/client-go/pkg/apis/extensions/v1beta1"
 	"k8s.io/client-go/rest"
 )
 

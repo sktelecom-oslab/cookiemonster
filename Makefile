@@ -1,8 +1,5 @@
 .PHONY: build clean docker vendor
 
-GOPATH := ${PWD}/vendor:${GOPATH}
-export GOPATH
-
 default: build-local
 
 all: vendor build docker
@@ -24,7 +21,7 @@ build-linux:
 	GOOS=linux CGO_ENABLED=0 go build -o bin/cookiemonsterworker-linux-amd64 -v ./src/worker/*.go
 
 clean:
-	rm -rf cookiemonster ./bin
+	rm -rf ./bin ./vendor
 
 docker:
 	docker build --no-cache -t oreo01:5000/cookiemonster -f Dockerfile.cookiemonster .
@@ -33,10 +30,4 @@ docker:
 	docker push oreo01:5000/cookiemonsterworker:latest
 
 vendor:
-	rm -rf ./vendor
-	GOPATH=${PWD}/vendor go get github.com/bluele/slack
-	GOPATH=${PWD}/vendor go get github.com/gorilla/mux
-	GOPATH=${PWD}/vendor go get k8s.io/apimachinery/pkg/apis/meta/v1
-	GOPATH=${PWD}/vendor go get k8s.io/client-go/kubernetes
-	GOPATH=${PWD}/vendor go get k8s.io/client-go/pkg/api/v1
-	GOPATH=${PWD}/vendor go get k8s.io/client-go/rest
+	glide install

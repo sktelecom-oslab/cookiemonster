@@ -41,9 +41,8 @@ kubectl get svc cookiemonster
 ##### Deploy stuff
 ```
 kubectl create ns test
-kubectl create clusterrolebinding test --clusterrole=cluster-admin --serviceaccount=test:default
-kubectl create clusterrolebinding test --clusterrole=cluster-admin --serviceaccount=default:default
-kubectl create secret generic ceph-secret-user --from-literal=key=AQCPrrdYbn6PJxAAWymornUUVbCkgWN6h+mPFg== --namespace=test
+kubectl create clusterrolebinding test --clusterrole=cluster-admin --serviceaccount=test:default | true
+kubectl create clusterrolebinding test --clusterrole=cluster-admin --serviceaccount=default:default | true
 helm install skt/etcd --name etcdtest --namespace test --version 0.1.0
 helm install skt/rabbitmq --name rabbitmqtest --namespace test --set replicas=7 --version 0.1.0
 helm install skt/mariadb --name mariadbtest --namespace test --set replicas=7 --version 0.1.0
