@@ -14,3 +14,10 @@ spec:
         image: oreo01:5000/cookiemonster:latest
         ports:
         - containerPort: 8080
+        volumeMounts:
+        - name: cookiemonster-tests
+          mountPath: /etc/cookies.d
+      volumes:
+        - name: cookiemonster-tests
+          configMap:
+            name: cookiemonster-cm

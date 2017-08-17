@@ -4,5 +4,5 @@
   "target": 1,
   "interval": 30,
   "duration": 600,
-  "slack": true
+  "slack": false
 }

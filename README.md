@@ -48,14 +48,34 @@ helm install skt/rabbitmq --name rabbitmqtest --namespace test --set replicas=7 
 helm install skt/mariadb --name mariadbtest --namespace test --set replicas=7 --version 0.1.0
 ```
 
+### v2 ###
+```
+URL="localhost:8080"
+curl http://$URL/list/
+curl http://$URL/list/killpod
+curl http://$URL/list/nodeexec
+curl http://$URL/show/killpod/openstack-random-deployment
+curl http://$URL/show/nodeexec/test-exec-random
+
+curl http://$URL/status/running
+curl http://$URL/status/completed
+
+curl http://$URL/start/killpod/openstack-random-deployment
+curl http://$URL/stop/killpod/openstack-random-deployment
+curl http://$URL/start/nodeexec/test-exec-random
+curl http://$URL/stop/nodeexec/test-exec-random
+```
+
+
+
 ##### Running locally
 ```
-curl -H "Content-Type: application/json" -X POST -d @./json/openstack-random-deployment.json 'http://localhost:8080/killpod/start/'
-curl -H "Content-Type: application/json" -X POST -d @./json/openstack-random-deployment.json 'http://localhost:8080/killpod/stop/'
+curl -H "Content-Type: application/json" -X POST -d @./cookies.d/openstack-random-deployment.json 'http://localhost:8080/killpod/start/'
+curl -H "Content-Type: application/json" -X POST -d @./cookies.d/openstack-random-deployment.json 'http://localhost:8080/killpod/stop/'
 ```
 
 ##### Running on Kubernetes
 ```
-curl -H "Content-Type: application/json" -X POST -d @./json/test-rabbitmq.json 'http://oreo07:32568/killpod/start/'
-curl -H "Content-Type: application/json" -X POST -d @./json/test-exec-random.json 'http://oreo07:32568/nodeexec/start/'
+curl -H "Content-Type: application/json" -X POST -d @./cookies.d/test-rabbitmq.json 'http://oreo07:32568/killpod/start/'
+curl -H "Content-Type: application/json" -X POST -d @./cookies.d/test-exec-random.json 'http://oreo07:32568/nodeexec/start/'
 ```
