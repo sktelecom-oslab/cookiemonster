@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"strconv"
 	"time"
 )
 
@@ -20,10 +21,10 @@ type ExecState struct {
 }
 
 var state []ExecState
-var id int
+var id int = 0
 
 func startNodeExec(name string, data ExecData) {
-	n := name + "-" + string(id)
+	n := name + "-" + strconv.Itoa(id)
 	execState := ExecState{
 		name:      n,
 		startTime: time.Now(),
