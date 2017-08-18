@@ -31,25 +31,27 @@ func sendCommands(ip string, data []RunnerExecData) ([]byte, error) {
 	return body, nil
 }
 
-// list all available tests
-func listTestAll(w http.ResponseWriter, r *http.Request) {
-	tests := listAvailableTests("")
-	fmt.Fprintf(w, "available tests:\n%v", formatArray(tests))
+// list groups
+func listGroups(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "%v\n", formatArray(jobGroups))
 }
 
-func listTestGroup(w http.ResponseWriter, r *http.Request) {
+// list jobs in a group
+func listJobs(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	tests := listAvailableTests(vars["group"])
-	fmt.Fprintf(w, "available tests:\n%v", formatArray(tests))
+	fmt.Fprintf(w, "%v\n", formatArray(tests))
 }
 
-func showTest(w http.ResponseWriter, r *http.Request) {
+//show job contents
+func showJob(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	contents := loadFile(vars["group"], vars["name"])
-	fmt.Fprintf(w, "test contents:\n%s", contents)
+	fmt.Fprintf(w, "%s\n", contents)
 }
 
-func startAction(w http.ResponseWriter, r *http.Request) {
+// start a job
+func startJob(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	if vars["group"] == "killpod" {
 		test := loadKillPod(vars["name"])
@@ -58,17 +60,46 @@ func startAction(w http.ResponseWriter, r *http.Request) {
 		test := loadNodeExec(vars["name"])
 		startNodeExec(test)
 	}
-	fmt.Fprintln(w, "test start triggered")
+	fmt.Fprintln(w, "start initiated")
 }
 
-func stopAction(w http.ResponseWriter, r *http.Request) {
+// stop a job
+func stopJob(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	if vars["group"] == "killpod" {
 		test := loadKillPod(vars["name"])
 		stopKillPod(test)
-		fmt.Fprintln(w, "test stop triggered")
+		fmt.Fprintln(w, "stop initiated")
 	} else if vars["group"] == "nodeexec" {
-		fmt.Fprintln(w, "can not stop a nodeexec test")
+		fmt.Fprintln(w, "can not stop a nodeexec job")
+	} else {
+		fmt.Fprintln(w, "invalid group specified")
+	}
+}
+
+// show the current status for a group
+func statusGroup(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	if vars["group"] == "killpod" {
+		statusesKillPod()
+	} else if vars["group"] == "nodeexec" {
+		nodeStatus()
+	} else {
+		fmt.Fprintln(w, "invalid group specified")
+	}
+}
+
+// show the current status for a job
+func statusJob(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	if vars["group"] == "killpod" {
+		//test := loadKillPod(vars["name"])
+		//stopKillPod(test)
+		fmt.Fprintln(w, "killpod group job status TBD")
+	} else if vars["group"] == "nodeexec" {
+		fmt.Fprintln(w, "nodeexec group job status TBD")
+	} else {
+		fmt.Fprintln(w, "invalid group specified")
 	}
 }
 
@@ -81,16 +112,6 @@ func killPodStatus(w http.ResponseWriter, r *http.Request) {
 	readJSONData(r, data)
 
 	fmt.Fprintln(w, "pod name: ", podName)
-}
-
-func killPodStatuses(w http.ResponseWriter, r *http.Request) {
-	statusesKillPod()
-}
-
-
-// list of all previous and current jobs
-func nodeExecStatus(w http.ResponseWriter, r *http.Request) {
-	nodeStatus()
 }
 
 // show specific job details and output

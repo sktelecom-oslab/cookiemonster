@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 )
 
-var testGroups = [2]string{"killpod", "nodeexec"}
+var jobGroups = []string{"killpod", "nodeexec"}
 
 type KillPodData struct {
 	Name      string `json:"name"`
@@ -70,7 +70,7 @@ func readJSONData(r *http.Request, data interface{}) {
 func listAvailableTests(group string) []string {
 	var testList []string
 	if group == "" {
-		for _, g := range testGroups {
+		for _, g := range jobGroups {
 			testList = append(testList, listAvailableTests(g)...)
 		}
 	} else {

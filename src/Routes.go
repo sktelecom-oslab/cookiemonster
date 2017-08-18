@@ -17,48 +17,14 @@ type Routes []Route
 func NewRouter() *mux.Router {
 
 	router := mux.NewRouter().StrictSlash(true)
-	for _, route := range routes {
-		router.
-			Methods(route.method).
-			Path(route.pattern).
-			Name(route.name).
-			Handler(route.handlerFunc)
-	}
-
+	router.HandleFunc("/list", listGroups)
+	router.HandleFunc("/list/{group}", listJobs)
+	router.HandleFunc("/show/{group}/{name}", showJob)
+	router.HandleFunc("/start/{group}/{name}", startJob)
+	router.HandleFunc("/stop/{group}/{name}", stopJob)
+	router.HandleFunc("/status/{group}", statusGroup)
+	router.HandleFunc("/status/{group}/{name}", statusJob)
 	return router
-}
-
-var routes = Routes{
-	Route{
-		"listTestAll",
-		"GET",
-		"/list",
-		listTestAll,
-	},
-	Route{
-		"listTestGroup",
-		"GET",
-		"/list/{group}",
-		listTestGroup,
-	},
-	Route{
-		"showTest",
-		"GET",
-		"/show/{group}/{name}",
-		showTest,
-	},
-	Route{
-		"startAction",
-		"GET",
-		"/start/{group}/{name}",
-		startAction,
-	},
-	Route{
-		"stopAction",
-		"GET",
-		"/stop/{group}/{name}",
-		stopAction,
-	},
 }
 
 /*
