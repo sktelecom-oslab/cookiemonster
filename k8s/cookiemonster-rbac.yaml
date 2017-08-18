@@ -22,7 +22,7 @@ metadata:
     component: cookiemonster
 rules:
 - apiGroups: [""]
-  resources: ["pods"]
+  resources: ["nodes", "pods"]
   verbs: ["get", "list", "delete"]
 - apiGroups: ["apps"]
   resources: ["deployments"]

@@ -48,9 +48,10 @@ helm install skt/rabbitmq --name rabbitmqtest --namespace test --set replicas=7 
 helm install skt/mariadb --name mariadbtest --namespace test --set replicas=7 --version 0.1.0
 ```
 
-### v2 ###
+### URL endpoints to test
 ```
 URL="localhost:8080"
+
 curl http://$URL/list
 curl http://$URL/list/killpod
 curl http://$URL/list/nodeexec
