@@ -30,17 +30,38 @@ func NewRouter() *mux.Router {
 
 var routes = Routes{
 	Route{
-		"killPodStart",
-		"POST",
-		"/killpod/start/",
-		killPodStart,
+		"listTestAll",
+		"GET",
+		"/list",
+		listTestAll,
 	},
 	Route{
-		"killPodStop",
-		"POST",
-		"/killpod/stop/",
-		killPodStop,
+		"listTestGroup",
+		"GET",
+		"/list/{group}",
+		listTestGroup,
 	},
+	Route{
+		"showTest",
+		"GET",
+		"/show/{group}/{name}",
+		showTest,
+	},
+	Route{
+		"startAction",
+		"GET",
+		"/start/{group}/{name}",
+		startAction,
+	},
+	Route{
+		"stopAction",
+		"GET",
+		"/stop/{group}/{name}",
+		stopAction,
+	},
+}
+
+/*
 	Route{
 		"killPodStatus",
 		"GET",
@@ -54,12 +75,6 @@ var routes = Routes{
 		killPodStatuses,
 	},
 	Route{
-		"nodeExecStart",
-		"POST",
-		"/nodeexec/start/",
-		nodeExecStart,
-	},
-	Route{
 		"nodeExecStatus",
 		"POST",
 		"/nodeexec/status/",
@@ -71,4 +86,4 @@ var routes = Routes{
 		"/nodeexec/status/{id}",
 		nodeExecStatusDetails,
 	},
-}
+*/

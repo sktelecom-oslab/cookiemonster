@@ -6,7 +6,7 @@ metadata:
     app: cookiemonsterworker
 apiVersion: v1
 data:
-  openstack-random-daemonset.json: |-
+  killpod/openstack-random-daemonset.json: |-
     {
       "kind": "daemonset",
       "namespace": "openstack",
@@ -15,7 +15,7 @@ data:
       "duration": 600,
       "slack": true
     }
-  openstack-random-deployment.json: |-
+  killpod/openstack-random-deployment.json: |-
     {
       "kind": "deployment",
       "namespace": "openstack",

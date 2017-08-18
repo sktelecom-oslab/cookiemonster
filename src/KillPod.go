@@ -17,19 +17,20 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 )
 
+var clusterMode bool
+
 func randomInt(i int) int {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	return r.Intn(i)
 }
 
 func kubeConnect() (*kubernetes.Clientset, error) {
-	//var config *rest.Config
-
 	// attempt in kubebernetes cluster client init
 	var config, err = rest.InClusterConfig()
 
 	if err == nil {
 		log.Println("Running in Kubernetes cluster")
+		clusterMode = true
 		clientset, err := kubernetes.NewForConfig(config)
 		if err != nil {
 			return nil, err
@@ -40,18 +41,16 @@ func kubeConnect() (*kubernetes.Clientset, error) {
 		var kubeconfig = filepath.Join(os.Getenv("HOME"), ".kube", "config")
 		config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
 		if err != nil {
-			//panic("Unable to initialize connection to kubernetes")
 			return nil, err
 		}
 		log.Println("Running locally via ~/.kube/config")
+		clusterMode = false
 		clientset, err := kubernetes.NewForConfig(config)
 		if err != nil {
 			return nil, err
 		}
 		return clientset, err
 	}
-
-	// create the clientset
 }
 
 func victimDeployment(c *kubernetes.Clientset, ns, name string) (apps_v1beta1.Deployment, bool) {
