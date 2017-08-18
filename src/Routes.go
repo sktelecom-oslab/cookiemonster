@@ -15,7 +15,6 @@ type Route struct {
 type Routes []Route
 
 func NewRouter() *mux.Router {
-
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/list", listGroups)
 	router.HandleFunc("/list/{group}", listJobs)
@@ -26,30 +25,3 @@ func NewRouter() *mux.Router {
 	router.HandleFunc("/status/{group}/{name}", statusJob)
 	return router
 }
-
-/*
-	Route{
-		"killPodStatus",
-		"GET",
-		"/killpod/status/{podName}",
-		killPodStatus,
-	},
-	Route{
-		"killPodStatuses",
-		"GET",
-		"/killpod/status/",
-		killPodStatuses,
-	},
-	Route{
-		"nodeExecStatus",
-		"POST",
-		"/nodeexec/status/",
-		nodeExecStatus,
-	},
-	Route{
-		"nodeExecStatusDetails",
-		"POST",
-		"/nodeexec/status/{id}",
-		nodeExecStatusDetails,
-	},
-*/

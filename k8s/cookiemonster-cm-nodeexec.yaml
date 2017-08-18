@@ -30,7 +30,7 @@ data:
     }
   test-exec-single.json: |-
     {
-      "target": "kube-node02",
+      "target": "cn02.k4.stg.taco",
       "commands": [
         {
           "command": "hostname"
@@ -42,6 +42,24 @@ data:
           "command": "ls",
           "parameters": [
             "-l"
+          ]
+        }
+      ]
+    }
+  test-exec-all.json: |-
+    {
+      "target": "all",
+      "commands": [
+        {
+          "command": "hostname"
+        },
+        {
+          "command": "whoami"
+        },
+        {
+          "command": "ps",
+          "parameters": [
+            "aux"
           ]
         }
       ]

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"time"
 )
@@ -12,17 +13,19 @@ type Result struct {
 }
 
 type ExecState struct {
-	id        int
+	name      string
 	startTime time.Time
 	stopTime  time.Time
 	results   []Result
 }
 
 var state []ExecState
+var id int
 
-func startNodeExec(data ExecData) {
+func startNodeExec(name string, data ExecData) {
+	n := name + "-" + string(id)
 	execState := ExecState{
-		id:        123,
+		name:      n,
 		startTime: time.Now(),
 	}
 	if data.Target == "" {
@@ -43,20 +46,25 @@ func startNodeExec(data ExecData) {
 	}()
 
 	state = append(state, execState)
+	id++
 }
 
-func nodeStatus() {
-	log.Println("Node Exec Status")
+func statusNodeExec() string {
+	var status string
+	status = "Jobs:\n"
 	for _, s := range state {
-		log.Printf("Id: %d", s.id)
+		status += s.name + "\n"
 	}
+	return status
 }
 
-func nodeDetails(id int) {
+func statusNodeExecJob(name string) string {
+	var status string
+	status = "Job Status:\n"
 	for _, s := range state {
-		log.Printf("Id: %d", s.id)
-		if id == s.id {
-			log.Println("Match!")
+		if s.name == name {
+			status += fmt.Sprintf("%v", s)
 		}
 	}
+	return status
 }

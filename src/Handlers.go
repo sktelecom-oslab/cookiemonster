@@ -54,11 +54,11 @@ func showJob(w http.ResponseWriter, r *http.Request) {
 func startJob(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	if vars["group"] == "killpod" {
-		test := loadKillPod(vars["name"])
-		startKillPod(test)
+		job := loadKillPod(vars["name"])
+		startKillPod(vars["name"], job)
 	} else if vars["group"] == "nodeexec" {
-		test := loadNodeExec(vars["name"])
-		startNodeExec(test)
+		job := loadNodeExec(vars["name"])
+		startNodeExec(vars["name"], job)
 	}
 	fmt.Fprintln(w, "start initiated")
 }
@@ -67,8 +67,8 @@ func startJob(w http.ResponseWriter, r *http.Request) {
 func stopJob(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	if vars["group"] == "killpod" {
-		test := loadKillPod(vars["name"])
-		stopKillPod(test)
+		job := loadKillPod(vars["name"])
+		stopKillPod(vars["name"], job)
 		fmt.Fprintln(w, "stop initiated")
 	} else if vars["group"] == "nodeexec" {
 		fmt.Fprintln(w, "can not stop a nodeexec job")
@@ -81,9 +81,11 @@ func stopJob(w http.ResponseWriter, r *http.Request) {
 func statusGroup(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	if vars["group"] == "killpod" {
-		statusesKillPod()
+		status := statusKillPod()
+		fmt.Fprintln(w, status)
 	} else if vars["group"] == "nodeexec" {
-		nodeStatus()
+		status := statusNodeExec()
+		fmt.Fprintln(w, status)
 	} else {
 		fmt.Fprintln(w, "invalid group specified")
 	}
@@ -93,33 +95,12 @@ func statusGroup(w http.ResponseWriter, r *http.Request) {
 func statusJob(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	if vars["group"] == "killpod" {
-		//test := loadKillPod(vars["name"])
-		//stopKillPod(test)
-		fmt.Fprintln(w, "killpod group job status TBD")
+		status := statusKillPodJob(vars["name"])
+		fmt.Fprintln(w, status)
 	} else if vars["group"] == "nodeexec" {
-		fmt.Fprintln(w, "nodeexec group job status TBD")
+		status := statusNodeExecJob(vars["name"])
+		fmt.Fprintln(w, status)
 	} else {
 		fmt.Fprintln(w, "invalid group specified")
 	}
 }
-
-/*
-func killPodStatus(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	podName := vars["podName"]
-
-	data := &KillPodData{}
-	readJSONData(r, data)
-
-	fmt.Fprintln(w, "pod name: ", podName)
-}
-
-// show specific job details and output
-func nodeExecStatusDetails(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	execId, _ := strconv.Atoi(vars["id"])
-
-	nodeDetails(execId)
-	fmt.Fprintf(w, "id: %d\n", execId)
-}
-*/

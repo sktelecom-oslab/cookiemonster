@@ -25,6 +25,7 @@ type RunnerExecData struct {
 }
 
 type ExecData struct {
+	Name     string           `json:"name"`
 	Target   string           `json:"target"`
 	Commands []RunnerExecData `json:"commands"`
 }

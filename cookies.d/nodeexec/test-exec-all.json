@@ -1,16 +1,16 @@
 {
-  "target": "cn02.k4.stg.taco",
+  "target": "all",
   "commands": [
     {
       "command": "hostname"
     },
     {
-      "command": "date"
+      "command": "whoami"
     },
     {
-      "command": "ls",
+      "command": "ps",
       "parameters": [
-        "-l"
+        "aux"
       ]
     }
   ]
