@@ -1,0 +1,48 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cookiemonster-cm-nodeexec
+  namespace: cookiemonster
+  labels:
+    component: cookiemonster
+data:
+  test-exec-random.json: |-
+    {
+      "target": "",
+      "commands": [
+        {
+          "command": "hostname"
+        },
+        {
+          "command": "sleep",
+          "parameters": [
+            "10"
+          ]
+        },
+        {
+          "command": "df",
+          "parameters": [
+            "-h"
+          ]
+        }
+      ]
+    }
+  test-exec-single.json: |-
+    {
+      "target": "kube-node02",
+      "commands": [
+        {
+          "command": "hostname"
+        },
+        {
+          "command": "date"
+        },
+        {
+          "command": "ls",
+          "parameters": [
+            "-l"
+          ]
+        }
+      ]
+    }

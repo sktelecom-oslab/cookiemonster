@@ -48,25 +48,6 @@ func configPath() string {
 	panic("Can not file configuration directory")
 }
 
-/*
-// parse JSON from request body
-func readJSONData(r *http.Request, data interface{}) {
-	body, err := ioutil.ReadAll(io.LimitReader(r.Body, 1048576))
-	if err != nil {
-		panic(err)
-	}
-	if err := r.Body.Close(); err != nil {
-		panic(err)
-	}
-
-	if err := json.Unmarshal(body, data); err != nil {
-		panic(err)
-	}
-
-	log.Println("request data: ", data)
-}
-*/
-
 func listAvailableTests(group string) []string {
 	var testList []string
 	if group == "" {

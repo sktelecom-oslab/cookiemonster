@@ -1,9 +1,11 @@
+---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  labels:
-    app: cookiemonsterworker
   name: cookiemonsterworker
+  namespace: cookiemonster
+  labels:
+    component: cookiemonster
 spec:
   template:
     metadata:

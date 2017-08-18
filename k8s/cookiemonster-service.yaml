@@ -1,7 +1,11 @@
-kind: Service
+---
 apiVersion: v1
+kind: Service
 metadata:
   name: cookiemonster
+  namespace: cookiemonster
+  labels:
+    component: cookiemonster
 spec:
   selector:
     app: cookiemonster
