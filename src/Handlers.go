@@ -45,9 +45,8 @@ func listTestGroup(w http.ResponseWriter, r *http.Request) {
 
 func showTest(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	var test interface{}
-	loadJSON(vars["group"], vars["name"], &test)
-	fmt.Fprintf(w, "test contents:\n%v", test)
+	contents := loadFile(vars["group"], vars["name"])
+	fmt.Fprintf(w, "test contents:\n%s", contents)
 }
 
 func startAction(w http.ResponseWriter, r *http.Request) {

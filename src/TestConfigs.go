@@ -89,7 +89,7 @@ func listAvailableTests(group string) []string {
 	return testList
 }
 
-func loadJSON(group, name string, data interface{}) {
+func loadFile(group, name string) []byte {
 	testFile := filepath.Join(configPath(), group, name+".json")
 	if _, err := os.Stat(testFile); os.IsNotExist(err) {
 		panic(err)
@@ -99,6 +99,11 @@ func loadJSON(group, name string, data interface{}) {
 	if err != nil {
 		panic(err)
 	}
+	return b
+}
+
+func loadJSON(group, name string, data interface{}) {
+	b := loadFile(group, name)
 	if err := json.Unmarshal(b, data); err != nil {
 		panic(err)
 	}
