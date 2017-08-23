@@ -9,6 +9,7 @@ metadata:
 data:
   openstack-random-daemonset.json: |-
     {
+      "name": "",
       "kind": "daemonset",
       "namespace": "openstack",
       "target": 1,
@@ -18,6 +19,7 @@ data:
     }
   openstack-random-deployment.json: |-
     {
+      "name": "",
       "kind": "deployment",
       "namespace": "openstack",
       "target": 1,
@@ -27,6 +29,7 @@ data:
     }
   openstack-random-statefulset.json: |-
     {
+      "name": "",
       "kind": "statefulset",
       "namespace": "openstack",
       "target": 1,

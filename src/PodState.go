@@ -22,32 +22,32 @@ type PodState struct {
 
 var activePods []PodState
 
-func startKillPod(name string, data KillPodData) {
+func startKillPod(jobName string, data KillPodData) {
 	x := false
 	for _, podState := range activePods {
-		if podState.name == name {
+		if podState.name == jobName {
 			x = true
 		}
 	}
 
 	if x == true {
-		log.Printf("pod %s is already being munched, ignoring request\n", name)
+		log.Printf("pod %s is already being munched, ignoring request\n", jobName)
 		return
 	}
 
 	podState := PodState{
-		name:      name,
+		name:      jobName,
 		startTime: time.Now(),
 		ticker:    time.NewTicker(time.Second * time.Duration(data.Interval)),
 	}
-	if name == "" {
+	if data.Name == "" {
 		log.Printf("Cookie Time!!! Random feast starting on %s in namespace %s", data.Kind, data.Namespace)
 	} else {
-		log.Printf("Cookie Time!!! Feast starting on %s %s in namespace %s", name, data.Kind, data.Namespace)
+		log.Printf("Cookie Time!!! Feast starting on %s %s in namespace %s", data.Name, data.Kind, data.Namespace)
 	}
 	go func() {
 		for range podState.ticker.C {
-			if victimName := killPod(name, data.Kind, data.Namespace, data.Slack); victimName != "" {
+			if victimName := killPod(data.Name, data.Kind, data.Namespace, data.Slack); victimName != "" {
 				v := Victim{podName: victimName, timeOfDeath: time.Now()}
 				podState.victims = append(podState.victims, v)
 			}
