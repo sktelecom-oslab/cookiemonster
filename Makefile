@@ -24,10 +24,8 @@ clean:
 	rm -rf ./bin ./vendor
 
 docker:
-	docker build --no-cache -t oreo01:5000/cookiemonster -f Dockerfile.cookiemonster .
-	docker build --no-cache -t oreo01:5000/cookiemonsterworker -f Dockerfile.cookiemonsterworker .
-	docker push oreo01:5000/cookiemonster:latest
-	docker push oreo01:5000/cookiemonsterworker:latest
+	docker build --no-cache -t cookiemonster -f Dockerfile.cookiemonster .
+	docker build --no-cache -t cookiemonsterworker -f Dockerfile.cookiemonsterworker .
 
 vendor:
 	glide install

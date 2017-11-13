@@ -1,11 +1,22 @@
-## Lets break stuff and eat cookies
+Lets break stuff and eat cookies
+================================
 
 CookieMonster will eat your applications. And infrastructure. And possibly your cat if it gets too close.
 
-### Build
+### Pre-requirements
+ * Go lang 
+ * Docker
+ * Kubernetes
+```sh 
+export GOPATH=$HOME/go
+git clone http://github.com/sktelecom-oslab/cookiemonster $GOPATH/src/cookiemonster
+cd $GOPATH/src/cookiemonster
 ```
+
+### Build
+```sh
 make vendor
-make build
+make build-linux
 make docker
 ```
 
@@ -23,7 +34,7 @@ or
 
 ### Run locally with Docker
 ```
-docker run -d -p 8080:8080 oreo01:5000/cookiemonster:latest
+docker run -d -p 8080:8080 cookiemonster:latest
 ```
 
 ### Run on a Kubernetes cluster
@@ -50,7 +61,7 @@ helm install skt/mariadb --name mariadbtest --namespace test --set replicas=7 --
 
 ### URL endpoints to test
 ```
-URL="localhost:8080"
+URL="localhost:30003"
 
 curl http://$URL/list
 curl http://$URL/list/killpod

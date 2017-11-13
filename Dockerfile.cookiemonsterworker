@@ -5,8 +5,8 @@ MAINTAINER Open System Lab
 RUN apk --no-cache update && \
     apk add ca-certificates
 
-COPY bin/cookiemonsterworker-linux-amd64 /usr/local/bin/cookie-monster-worker
+COPY bin/cookiemonsterworker-linux-amd64 /usr/local/bin/cookiemonster-worker
 
 EXPOSE 8081
 
-CMD ["/usr/local/bin/cookie-monster-worker"]
+CMD ["/usr/local/bin/cookiemonster-worker"]
