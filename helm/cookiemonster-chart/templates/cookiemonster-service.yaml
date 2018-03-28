@@ -1,0 +1,19 @@
+{{- $envAll := . }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cookiemonster
+  namespace: {{ $envAll.Release.Namespace }}
+  labels:
+    component: cookiemonster
+spec:
+  selector:
+    app: cookiemonster
+  ports:
+    - name: http
+      protocol: TCP
+      nodePort: 30003
+      port: 8080
+      targetPort: 8080
+  type: NodePort

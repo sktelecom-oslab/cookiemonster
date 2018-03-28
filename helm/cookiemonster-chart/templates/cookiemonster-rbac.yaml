@@ -1,0 +1,46 @@
+{{- $envAll := . }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cookiemonster
+  namespace: {{ $envAll.Release.Namespace }}
+  labels:
+    component: cookiemonster
+
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: cookiemonster
+  labels:
+    component: cookiemonster
+rules:
+- apiGroups: [""]
+  resources: ["nodes", "pods"]
+  verbs: ["get", "list", "delete"]
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["get", "list"]
+- apiGroups: ["apps"]
+  resources: ["statefulsets"]
+  verbs: ["get", "list", "delete"]
+- apiGroups: ["extensions"]
+  resources: ["daemonsets"]
+  verbs: ["get", "list", "delete"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: cookiemonster
+  labels:
+    component: cookiemonster
+roleRef:
+  kind: ClusterRole
+  name: cookiemonster
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  name: cookiemonster
+  namespace: {{ $envAll.Release.Namespace }}

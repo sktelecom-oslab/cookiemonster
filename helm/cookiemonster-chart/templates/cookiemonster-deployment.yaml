@@ -1,0 +1,34 @@
+{{- $envAll := . }}
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: cookiemonster
+  namespace: {{ $envAll.Release.Namespace }}
+  labels:
+    component: cookiemonster
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: cookiemonster
+    spec:
+      serviceAccountName: cookiemonster
+      containers:
+      - name: cookiemonster
+        image: opensystemlab/cookiemonster:latest
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: killpod
+          mountPath: /etc/cookies.d/killpod
+        - name: nodeexec
+          mountPath: /etc/cookies.d/nodeexec
+      volumes:
+        - name: killpod
+          configMap:
+            name: cookiemonster-cm-killpod
+        - name: nodeexec
+          configMap:
+            name: cookiemonster-cm-nodeexec
