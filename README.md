@@ -39,7 +39,7 @@ docker run -d -p 8080:8080 cookiemonster:latest
 
 ### Run on a Kubernetes cluster
 ```
-kubectl create -f ./k8s/
+helm install ./helm/cookiemonster-chart --name cookiemonster
 ```
 
 Choose a host from the cluster and note the port that gets mapped

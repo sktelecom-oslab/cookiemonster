@@ -1,0 +1,25 @@
+{{- $envAll := . }}
+---
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: cookiemonsterworker
+  namespace: {{ $envAll.Release.Namespace }}
+  labels:
+    component: cookiemonster
+spec:
+  template:
+    metadata:
+      labels:
+        app: cookiemonsterworker
+    spec:
+      hostIPC: true
+      hostPID: true
+      hostNetwork: true
+      containers:
+      - name: cookiemonsterworker
+        image: opensystemlab/cookiemonsterworker:latest
+        ports:
+        - containerPort: 8081
+        securityContext:
+          privileged: true
