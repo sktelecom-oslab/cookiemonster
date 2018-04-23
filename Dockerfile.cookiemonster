@@ -1,12 +1,13 @@
-FROM alpine:3.6
+FROM golang:latest
 
 MAINTAINER Open System Lab
 
-RUN apk --no-cache update && \
-    apk add ca-certificates
+RUN mkdir /app
+ADD config /app/config
+WORKDIR /app
 
-COPY bin/cookiemonster-linux-amd64 /usr/local/bin/cookiemonster
+COPY bin/cookiemonster-linux-amd64 /app/cookiemonster
 
 EXPOSE 8080
 
-CMD ["/usr/local/bin/cookiemonster", "-inKubeCluster=true"]
+CMD ["/app/cookiemonster"]
