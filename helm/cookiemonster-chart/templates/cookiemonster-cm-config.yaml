@@ -1,0 +1,29 @@
+{{- $envAll := . }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cookiemonster-cm-config
+  namespace: {{ $envAll.Release.Namespace }}
+  labels:
+    component: cookiemonster
+data:
+  config.yaml: |-
+    namespace:
+      - name: openstack
+        resource:
+        - kind: deployment
+          name:
+          target: 1
+        - kind: daemonset
+          name:
+          target: 1
+        - kind: statefulset
+          name: mariadb
+          target: 1
+        - kind: statefulset
+          name: rabbitmq
+          target: 1
+    interval: 60
+    duration: 600
+    slack: true

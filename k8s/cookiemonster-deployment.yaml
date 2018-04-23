@@ -1,13 +1,14 @@
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cookiemonster
   namespace: cookiemonster
-  labels:
-    component: cookiemonster
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: cookiemonster
   template:
     metadata:
       labels:
@@ -17,17 +18,13 @@ spec:
       containers:
       - name: cookiemonster
         image: opensystemlab/cookiemonster:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
         volumeMounts:
-        - name: killpod
-          mountPath: /etc/cookies.d/killpod
-        - name: nodeexec
-          mountPath: /etc/cookies.d/nodeexec
+        - name: config
+          mountPath: /app/config
       volumes:
-        - name: killpod
-          configMap:
-            name: cookiemonster-cm-killpod
-        - name: nodeexec
-          configMap:
-            name: cookiemonster-cm-nodeexec
+      - name: config
+        configMap:
+          name: cookiemonster-cm-config

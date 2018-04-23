@@ -63,18 +63,7 @@ helm install skt/mariadb --name mariadbtest --namespace test --set replicas=7 --
 ```
 URL="localhost:30003"
 
-curl http://$URL/list
-curl http://$URL/list/killpod
-curl http://$URL/list/nodeexec
-curl http://$URL/show/killpod/openstack-random-deployment
-curl http://$URL/show/nodeexec/test-exec-random
-
-curl http://$URL/status/running
-curl http://$URL/status/completed
-
-curl http://$URL/start/killpod/openstack-random-deployment
-curl http://$URL/stop/killpod/openstack-random-deployment
-
-curl http://$URL/start/nodeexec/test-exec-random
-curl http://$URL/stop/nodeexec/test-exec-random
+curl -X POST http://$URL/api/v1/config
+curl -X POST http://$URL/api/v1/pod/start
+curl -X POST http://$URL/api/v1/pod/stop
 ```

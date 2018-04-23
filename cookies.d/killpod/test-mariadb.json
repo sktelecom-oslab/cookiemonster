@@ -1,7 +1,0 @@
-{
-  "name": "mariadb",
-  "kind": "statefulset",
-  "namespace": "test",
-  "interval": 15,
-  "duration": 600
-}

@@ -9,7 +9,7 @@ Within a given namespace maintain list of
 
 ### Modes of operation
 - single service
-- random  
+- random
 
 ### K8S API functions
 - delete single pod in cluster
