@@ -1,3 +1,8 @@
+## This repository is deprecated. We moved everything to the following repo
+https://github.com/openinfradev
+
+---
+
 Lets break stuff and eat cookies
 ================================
 
